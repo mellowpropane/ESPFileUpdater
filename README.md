@@ -89,7 +89,7 @@ You may specify these options in any order, one, both, or not at all.
 
 ## Process
 - Checks local FS for file existence
-  - If file does not exist, $$\color{lightgreen}[update]$$
+  - If file does not exist $$\color{lightgreen}[update]$$
 - If system time is invalid $$\color{red}[stop]$$
 - Reads .meta file URL
   - if URL is different than specified $$\color{lightgreen}[update]$$
@@ -111,7 +111,6 @@ You may specify these options in any order, one, both, or not at all.
 - Writes accompanying .meta file
 
 ### The .meta File
-
 
 Example
 ```
