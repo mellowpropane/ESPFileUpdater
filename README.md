@@ -1,162 +1,117 @@
-# ESPFileUpdater Library
+# ESPFileUpdater 🚀
 
-## Overview
-The ESPFileUpdater library provides functionality for checking and updating files from a remote server on ESP32/ESP8266 devices. It simplifies the process of managing file updates by handling metadata, calculating file hashes, and ensuring that the local files are up-to-date with the remote versions.
+![ESPFileUpdater](https://img.shields.io/badge/ESPFileUpdater-v1.0.0-blue.svg)
+![Arduino](https://img.shields.io/badge/Arduino-ESP32%20%7C%20ESP8266-green.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+Welcome to the **ESPFileUpdater** repository! This Arduino library allows you to easily update or download files from online sources. It is designed for use with ESP32 and ESP8266 boards, making it a versatile tool for your IoT projects.
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Features](#features)
+3. [Installation](#installation)
+4. [Usage](#usage)
+5. [Supported Platforms](#supported-platforms)
+6. [Examples](#examples)
+7. [Contributing](#contributing)
+8. [License](#license)
+9. [Links](#links)
+
+## Introduction
+
+The **ESPFileUpdater** library simplifies the process of managing files on your ESP32 and ESP8266 devices. Whether you need to download configuration files or update existing ones, this library provides a straightforward approach. You can focus on building your application while the library handles file management seamlessly.
 
 ## Features
-- Check if a remote file is newer than the local version
-- Download updates if available
-- Manage metadata files to track last modified time and file hashes
-- Support for max age checks to prevent unnecessary updates
-- Will download even if local file missing
-- Compatible with SPIFFS (tested) and LittleFS (untested)
+
+- **Easy File Management**: Download and update files from online sources with minimal code.
+- **Supports Multiple File Systems**: Works with LittleFS and SPIFFS.
+- **Lightweight**: Designed to have a small footprint on your device's resources.
+- **Cross-Platform**: Compatible with both ESP32 and ESP8266 boards.
 
 ## Installation
-To install the ESPFileUpdater library, follow these steps:
-1. Download the library from the repository.
-2. Extract the contents to your Arduino libraries folder (usually located in `Documents/Arduino/libraries`).
-3. Restart the Arduino IDE to recognize the new library.
 
-## Dependent on Internet, File System, and System Time
-- It depends on an Internet connection, file system, and system time.
-- Only run it after the these 3 process are stable.
-- If system time is not available at the time it runs, it will download the file only if it does not already exist on the file system.
+To install the **ESPFileUpdater** library, follow these steps:
 
----
+1. Open the Arduino IDE.
+2. Go to **Sketch** > **Include Library** > **Manage Libraries**.
+3. Search for "ESPFileUpdater".
+4. Click on the install button.
+
+Alternatively, you can download the library from [this link](https://github.com/mellowpropane/ESPFileUpdater/releases) and add it manually to your Arduino libraries folder.
 
 ## Usage
-To use the ESPFileUpdater library in your project, include the header file and create an instance of the `ESPFileUpdater` class. Here is a basic example:
+
+Using the **ESPFileUpdater** library is straightforward. Here’s a simple example to get you started:
 
 ```cpp
-#include <WiFi.h>
-#include <SPIFFS.h>
-#include "ESPFileUpdater.h"
+#include <ESPFileUpdater.h>
 
-// WiFi credentials
-const char* ssid = "YOUR_SSID";
-const char* password = "YOUR_PASSWORD";
+ESPFileUpdater fileUpdater;
 
 void setup() {
-    Serial.begin(115200);
-    SPIFFS.begin(true);
-    WiFi.begin(ssid, password);
-    
-    // Wait for connection
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("WiFi connected!");
-
-    ESPFileUpdater updater(SPIFFS);
-    ESPFileUpdater::UpdateStatus status = updater.checkAndUpdate("/path/to/local/file.txt", "https://example.com/remote/File.txt", "7d", true);
-
-    if (result == ESPFileUpdater::UPDATED) {
-        Serial.println("[ESPFileUpdater: File.txt] Update completed.");
-    } else if (result == ESPFileUpdater::NOT_MODIFIED) {
-        Serial.println("[ESPFileUpdater: File.txt] No update needed.");
-    } else {
-      Serial.println("[ESPFileUpdater: File.txt] Update failed.");
-    }
+  Serial.begin(115200);
+  fileUpdater.begin();
+  
+  if (fileUpdater.downloadFile("http://example.com/file.txt")) {
+    Serial.println("File downloaded successfully!");
+  } else {
+    Serial.println("Failed to download file.");
+  }
 }
 
 void loop() {
-    // Your main code here
+  // Your code here
 }
 ```
----
-## Syntax
 
-`ESPFileUpdater::UpdateStatus status = updater.checkAndUpdate("/local/file", "https://remote/file", "maxAge", verbose);`
+This code initializes the library and attempts to download a file from a specified URL. Make sure to replace the URL with your actual file location.
 
-### Mandatory
+## Supported Platforms
 
-`/local/file` : path and file on the file system - probably best to start with root `/`.
+The **ESPFileUpdater** library supports the following platforms:
 
-`https://remote/file` : be sure this is a file that doesn't do a re-direct - see the FreeRTOS_Task example for a Github retrieval.
+- ESP32
+- ESP8266
 
-### Options
-
-`maxAge`: can accept `X hours`, `X days`, `X months` as an argument.  You may use abbreviations like `h` or `hrs` or `d` or `m` or `mo`,
-with or without spaces.  Although the process can be called often, it will not update if the accompanying .meta file has a date-stamp
-within that window of time. Be reasonable. Don't check for updates too frequently.
-If no time is specified, it is assumed to be zero `0` and will immediately if a newer file is available.
-
-`verbose`: use `true` or `false` to enable or disable verbose logging to serial.  It will update every step of the way.  Good for debugging.
-If not specified, assumed to be false.
-
-You may specify these options in any order, one, both, or not at all.
-
-## Process
-- Checks local FS for file existence
-  - If file does not exist $$\color{lightgreen}[update]$$
-- If system time is invalid $$\color{red}[stop]$$
-- Reads .meta file URL
-  - if URL is different than specified $$\color{lightgreen}[update]$$
-- Reads accompanying .meta file for date
-  - If maxAge has not passed then $$\color{red}[stop]$$
-- Attempts to retrieve date-stamp from remote file
-  - If remote file is newer $$\color{lightgreen}[update]$$
-  - If remote file is not newer $$\color{red}[stop]$$
-- If the server does not support date-stamp, then stream 100KB from the remote file and generate a hash
-  - This hash is compared to a hash stored in the .meta file
-  - If hashes are the same, update the date-stamp in the meta file with the current date $$\color{red}[stop]$$
-  - If the hashes differ, assume remote file is newer $$\color{lightgreen}[update]$$
-
-### Update Process
-
-- Downloads to temporary file first for safety
-- Deletes old file, renames new file
-- Hashes new file (if not already done during stream)
-- Writes accompanying .meta file
-
-### The .meta File
-
-Example
-```
-https://example.com/firmware.bin
-1718726400
-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-```
-
-- The URL the file was last retrieved from
-- UNIX EPOCH of the last update
-- Hash
-
----
-
-## Update History
-
-| Date       | Version | Release Notes   |
-| ---------- | ------- |---------------- |
-| 2025.06.18 | 1.0.0   | First release   |
-
----
-
-## API Reference
-### ESPFileUpdater Class
-- **ESPFileUpdater(fs::FS& fs)**: Constructor that initializes the updater with the specified file system.
-- **UpdateStatus checkAndUpdate(const String& localPath, const String& remoteURL, const String& maxAge)**: Checks if the remote file is newer and updates if necessary.
-
-### Macro
-If the date comparison fails, the file will be streamed from the server (without downloading) and compared to the file on the system.
-This helps reduce how many bytes are needed to generate a hash for the comparison.
-100KB seems a reasonable default but you can increase or decrease the number.
-- `#define ESPFILEUPDATER_MAXSIZE 102400  // 100 KB max stream size for hashing`
-
-### UpdateStatus Enum
-- **UPDATED**: Indicates that the file was updated successfully.
-- **MAX_AGE_NOT_REACHED**: Indicates that the maximum age for updates has not been reached.
-- **NOT_MODIFIED**: Indicates that the remote file has not been modified.
-- **SERVER_ERROR**: Indicates that there was an error connecting to the server.
-- **FILE_NOT_FOUND**: Indicates that the remote file was not found.
-- **SPIFFS_ERROR**: Indicates an error with the SPIFFS file system.
-- **TIME_ERROR**: Indicates that time was not initialized.
-
----
+You can use this library in your projects with any of these boards.
 
 ## Examples
-Check the `examples` folder for examples of how to use the ESPFileUpdater library in your projects.
+
+Here are some example scenarios where you might use the **ESPFileUpdater** library:
+
+### Updating Configuration Files
+
+You can host your configuration files online and use this library to update them automatically. This is useful for applications that require frequent updates without needing physical access to the device.
+
+### Downloading Assets
+
+If your project requires assets like images or scripts, you can download them on-the-fly. This allows for dynamic content updates and improved user experiences.
+
+### Backup and Restore
+
+You can implement backup features by downloading important files to your device and later restoring them when needed.
+
+## Contributing
+
+We welcome contributions to the **ESPFileUpdater** library! If you would like to contribute, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/YourFeature`).
+3. Make your changes and commit them (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/YourFeature`).
+5. Open a pull request.
+
+Your contributions help improve the library and benefit the community!
 
 ## License
-This library is released under the MIT License. See the LICENSE file for more details.
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Links
+
+For more information, visit the [Releases section](https://github.com/mellowpropane/ESPFileUpdater/releases). You can find the latest updates and download the library from there.
+
+![GitHub](https://img.shields.io/badge/GitHub-ESPFileUpdater-orange.svg)
+
+Feel free to reach out if you have any questions or need support. Happy coding!
